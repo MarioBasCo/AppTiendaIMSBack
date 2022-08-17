@@ -1,6 +1,5 @@
-
 <?php
-class Pedidos_Ctrl{
+class Administrar_Pedidos_Ctrl {
     public $M_Carrito = null;
   
     public function __construct()
@@ -10,8 +9,7 @@ class Pedidos_Ctrl{
 
     public function getPedidos($f3){
         $id = $f3->get('PARAMS.id');
-
-        $cadenaSQL= "SELECT c.*, pg.tipoPago, dc.cantidad, p.idCategoria, 
+        $cadenaSQL = "SELECT c.*, pg.tipoPago, dc.cantidad, p.idCategoria, 
         CONCAT(u.nombre, ' ', u.apellido) AS cliente,
         u.telefono, cat.nombreCat, p.id_producto, p.nombre_producto, 
         p.foto_producto, p.precio, e.detalle_estado
@@ -22,7 +20,7 @@ class Pedidos_Ctrl{
         LEFT JOIN tb_pago pg ON c.idPago = pg.idPago
         LEFT JOIN tb_productos p ON p.id_producto = dc.id_producto
         LEFT JOIN tb_categoria cat ON p.idCategoria = cat.idCategoria
-        WHERE id_usr=".$id;
+        WHERE e.id_estado=".$id;
 
         $result = $f3->DB->exec($cadenaSQL);
         $data = array();
@@ -81,6 +79,7 @@ class Pedidos_Ctrl{
                 }
             }
             
+
             echo json_encode([
                 'status'=>true,
                 'mensaje'=>'Datos encontrados',
@@ -94,27 +93,6 @@ class Pedidos_Ctrl{
         }
     }
 
-    public function getComprasxID($f3) {
-        $id = $f3->get('PARAMS.id');
-        $cadenaSQL= "SELECT COUNT(id_usr) AS compras, SUM(total_carrito) AS total FROM tb_carritodecompra
-        WHERE id_estado = 3 AND id_usr=".$id;
-
-        $result = $f3->DB->exec($cadenaSQL);
-
-        if ($result[0]['compras'] > 0){
-            echo json_encode([
-                'status'=>true,
-                'mensaje'=>'Se encontró información',
-                'data'=>$result
-            ]);
-        } else {
-            echo json_encode([
-                'status'=>false,
-                'mensaje'=>'No se encontraron datos',
-                'data'=>[]
-            ]);
-        }
-    }
 
     public function getDetallePedxID($f3) {
         $id = $f3->get('PARAMS.id');
@@ -133,5 +111,4 @@ class Pedidos_Ctrl{
             'data' => $result
           ]);
     }
-
 }
